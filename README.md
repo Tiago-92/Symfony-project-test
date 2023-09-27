@@ -1,4 +1,4 @@
-# Symfony-project-test
+# Symfony App
 Projeto simples para praticar e estudar o o framework Symfony do PHP
 
 # Principais Tecnologias
