@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ titulo }} {% endblock %}
+{% block body %}
+<h1>{{ titulo }}</h1>
+<a href="{{ path('add-category') }}" class="btn btn-primary">+ Adicionar</a>
+<table class="table">
+  <thead>
+    <tr>
+      <td>#</td>
+      <td>Descrição</td>
+      <td>Acões</td>
+    </tr>
+  </thead>
+  <tbody>
+  {% for category in categorys %}
+    <tr>
+      <td>{{ category.id }}</td>
+      <td>{{ category.description }}</td>
+      <td>
+        <a href="{{ path('update-category', {id: category.id}) }}" class="btn btn-primary">Editar</a>
+        <a href="{{ path('delete-category', {id: category.id}) }}" class="btn btn-primary">Excluir</a>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

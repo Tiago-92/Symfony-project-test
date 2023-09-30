@@ -17,7 +17,7 @@ class ProductType extends AbstractType
       ->add('name', TextType::class, ['label' => 'Nome do produto: '])
       ->add('value', TextType::class, ['label' => 'Valor'])
       ->add('no', TextType::class, ['label' => 'no'])
-      ->add('category_id', EntityType::class, [
+      ->add('category', EntityType::class, [
         'class' => Category::class, // relação com tabela category, precisa importar EntyType
         'choice_label' => 'description',
         'label' => 'Categoria: '

@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ titulo }} {% endblock %}
+{% block body %}
+<h1>{{ titulo }}</h1>
+<a href="{{ path('add-product') }}" class="btn btn-primary">+ Adicionar</a>
+<table class="table">
+  <thead>
+    <tr>
+      <td>#</td>
+      <td>Nome do Produto</td>
+      <td>Valor</td>
+      <td>Categoria</td>
+      <td>Ações</td>
+    </tr>
+  </thead>
+  <tbody>
+  {% for product in products %}
+    <tr>
+      <td>{{ product.id }}</td>
+      <td>{{ product.name }}</td>
+      <td>{{ product.value }}</td>
+      <td>{{ product.category.description }}</td>
+      <td>
+        <a href="{{ path('update-product', {id: product.id}) }}" class="btn btn-primary">Editar</a>
+        <a href="{{ path('delete-product', {id: product.id}) }}" class="btn btn-primary">Excluir</a>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

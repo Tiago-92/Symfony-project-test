@@ -4,10 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Form\ProductType;
-use App\Repository\CategoryRepository;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,44 +17,73 @@ class ProductController extends AbstractController
   /**
    * @Route("/product", name="index-product")
    */
-  public function index(EntityManagerInterface $em, CategoryRepository $categoryRepository)
+  public function index(ProductRepository $productRepository)
   {
-    $categoryId = 1;
-    $category = $categoryRepository->find($categoryId); // categoria "computing"
-    $product = new Product();
-    $product->setName("Notebook");
-    $product->setValue(3000);
-    $product->setCategory($category);
-    $product->setNo("N/A");
+    // busca dos produtos cadastrados
+    $data['products'] = $productRepository->findAll();
+    $data['titulo'] = "Gerenciar Produtos";
 
-    $msg = "";
-
-  try {
-      $em->persist($product); // salvar persist em memória
-      $em->flush(); // executa no banco de dados
-      $msg = "Produto cadastrado com sucesso!";
-  } catch(\Doctrine\DBAL\Exception $e) {
-      // Captura exceções relacionadas ao banco de dados
-      $msg = "Erro no banco de dados: " . $e->getMessage();
-  } catch(\Exception $e) {
-      // Captura exceções gerais
-      $msg = "Erro ao cadastrar produto: " . $e->getMessage();
-  }
-
-    return new Response("<h1>" .$msg . "<h1>");
+    return $this->render('product/index.html.twig', $data);
   }
 
   /**
    * @Route("/product/add", name="add-product")
    */
 
-   public function add()
+   public function add(Request $request, EntityManagerInterface $em)
    {
-    $form = $this->createForm(ProductType::class);
+    $msg = '';
+    $product = new Product();
+    $form = $this->createForm(ProductType::class, $product);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+      $em->persist($product);
+      $em->flush();
+      $msg = "Produto cadastrado com sucesso";
+    }
+
     $data['titulo'] = 'Adicionar novo produto';
     $data['form'] = $form;
+    $data['msg'] = $msg;
 
     return $this->renderForm('product/form.html.twig', $data);
    }
 
+    /**
+   * @Route("/product/update/{id}", name="update-product")
+   */
+
+   public function update($id, Request $request, EntityManagerInterface $em, ProductRepository $productRepository)
+   {
+    $msg = '';
+    $product = $productRepository->find($id);
+    $form = $this->createForm(ProductType::class, $product);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()){
+      $em->flush();
+      $msg = 'Produto atualizado com sucesso';    
+    }
+
+    $data['titulo'] = 'Editar produto';
+    $data['form'] = $form;
+    $data['msg'] = $msg;
+
+    return $this->renderForm('product/form.html.twig', $data);
+   }
+
+    /**
+   * @Route("/product/delete/{id}", name="delete-product")
+   */
+
+   public function delete($id, EntityManagerInterface $em, ProductRepository $productRepository)
+   {
+    $product = $productRepository->find($id);
+
+    $em->remove($product);
+    $em->flush();
+
+    return $this->redirectToRoute('index-product');
+   }
 } 
