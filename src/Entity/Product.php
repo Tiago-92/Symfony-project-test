@@ -14,6 +14,8 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+
+    
     private ?string $name = null;
 
     #[ORM\Column]
