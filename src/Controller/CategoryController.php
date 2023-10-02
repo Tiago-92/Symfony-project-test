@@ -18,6 +18,9 @@ class CategoryController extends AbstractController
    */
   public function index(CategoryRepository $categoryRepository)
   {
+    // restringir acesso da página apenas aos ROLE_USER
+    $this->denyAccessUnlessGranted('ROLE_USER');
+
     // listar as categorias do DB
     $data['categorys'] = $categoryRepository->findAll();
     $data['titulo'] = 'Gerenciar Categorias';

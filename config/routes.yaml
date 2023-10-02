@@ -11,3 +11,7 @@ hello:
 helloname:
     path: /helloname/{name}
     controller: App\Controller\HelloController::helloname
+
+app_logout:
+    path: /logout
+    methods: GET
