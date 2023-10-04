@@ -17,10 +17,14 @@ class ProductController extends AbstractController
   /**
    * @Route("/product", name="index-product")
    */
-  public function index(ProductRepository $productRepository)
+  public function index(Request $request, ProductRepository $productRepository)
   {
+    $productName = $request->query->get('product');
     // busca dos produtos cadastrados
-    $data['products'] = $productRepository->findAll();
+    $data['products'] = is_null($productName) 
+                          ? $productRepository->findAll()
+                          : $productRepository->findProductByLikeName($productName);
+    $data['productName'] = $productName;
     $data['titulo'] = "Gerenciar Produtos";
 
     return $this->render('product/index.html.twig', $data);
